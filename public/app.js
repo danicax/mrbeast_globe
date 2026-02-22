@@ -14,6 +14,7 @@ const mapCountEl = document.getElementById("map-count");
 const globeSvgEl = document.getElementById("globe-svg");
 const globeCountEl = document.getElementById("globe-count");
 const globeResetBtnEl = document.getElementById("globe-reset-btn");
+const globeLabelsToggleEl = document.getElementById("globe-labels-toggle");
 const overlayLegendEl = document.getElementById("overlay-legend");
 const tripletRowsEl = document.getElementById("triplet-rows");
 const addTripletBtnEl = document.getElementById("add-triplet-btn");
@@ -1555,15 +1556,17 @@ function renderGlobe(points, overlays, hiddenPointIndices = new Set()) {
       })
     );
 
-    const label = svgEl("text", {
-      x: labelX + 6,
-      y: labelY - 6,
-      fill: "#eef4ff",
-      "font-size": 11,
-      "font-weight": 600
-    });
-    label.textContent = point.name;
-    globeSvgEl.appendChild(label);
+    if (!globeLabelsToggleEl || globeLabelsToggleEl.checked) {
+      const label = svgEl("text", {
+        x: labelX + 6,
+        y: labelY - 6,
+        fill: "#eef4ff",
+        "font-size": 11,
+        "font-weight": 600
+      });
+      label.textContent = point.name;
+      globeSvgEl.appendChild(label);
+    }
   });
 }
 
@@ -2294,6 +2297,12 @@ if (globeResetBtnEl) {
   globeResetBtnEl.addEventListener("click", () => {
     state.globeUserControlled = false;
     state.globeCenter = null;
+    refreshGlobeOnly();
+  });
+}
+
+if (globeLabelsToggleEl) {
+  globeLabelsToggleEl.addEventListener("change", () => {
     refreshGlobeOnly();
   });
 }
