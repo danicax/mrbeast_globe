@@ -20,13 +20,6 @@ h1 {
   margin-bottom: 0.5rem;
 }
 
-.top-controls {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  margin-bottom: 0.4rem;
-}
-
 .hint {
   margin-top: 0;
 }
@@ -133,14 +126,6 @@ button:hover {
   font-size: 0.82rem;
 }
 
-.globe-controls {
-  margin-bottom: 0.35rem;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-}
-
 .globe-toggle {
   display: inline-flex;
   align-items: center;
@@ -152,26 +137,6 @@ button:hover {
 
 .globe-toggle input {
   accent-color: #60a5fa;
-}
-
-.globe-zoom {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  color: #dbeafe;
-  font-size: 0.82rem;
-  font-weight: 600;
-}
-
-.globe-zoom input[type="range"] {
-  width: 140px;
-}
-
-.globe-zoom span {
-  min-width: 3.2rem;
-  text-align: right;
-  color: #bfdbfe;
-  font-weight: 600;
 }
 
 .globe-reset-btn {
