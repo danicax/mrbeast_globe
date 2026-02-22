@@ -15,6 +15,8 @@ const globeSvgEl = document.getElementById("globe-svg");
 const globeCountEl = document.getElementById("globe-count");
 const globeResetBtnEl = document.getElementById("globe-reset-btn");
 const globeLabelsToggleEl = document.getElementById("globe-labels-toggle");
+const globeZoomRangeEl = document.getElementById("globe-zoom-range");
+const globeZoomValueEl = document.getElementById("globe-zoom-value");
 const overlayLegendEl = document.getElementById("overlay-legend");
 const tripletRowsEl = document.getElementById("triplet-rows");
 const addTripletBtnEl = document.getElementById("add-triplet-btn");
@@ -62,7 +64,8 @@ const state = {
   minLocations: Number(minLocationsRangeEl.value) || 3,
   userTouchedMinLocations: false,
   globeCenter: null,
-  globeUserControlled: false
+  globeUserControlled: false,
+  globeZoom: 1
 };
 
 function clamp(value, min, max) {
@@ -1266,6 +1269,16 @@ function setGlobeCenter(lat, lon, userControlled) {
   state.globeUserControlled = userControlled;
 }
 
+function setGlobeZoom(value) {
+  state.globeZoom = clamp(value, 0.6, 1.8);
+  if (globeZoomRangeEl) {
+    globeZoomRangeEl.value = String(Math.round(state.globeZoom * 100));
+  }
+  if (globeZoomValueEl) {
+    globeZoomValueEl.textContent = `${Math.round(state.globeZoom * 100)}%`;
+  }
+}
+
 function projectToGlobe(lat, lon, centerLat, centerLon, radius) {
   const latRad = lat * DEG_TO_RAD;
   const lonRad = lon * DEG_TO_RAD;
@@ -1504,7 +1517,7 @@ function renderGlobe(points, overlays, hiddenPointIndices = new Set()) {
   globeCountEl.textContent = `${points.length} point${points.length === 1 ? "" : "s"} loaded`;
 
   const center = getGlobeCenter(points);
-  const radius = GLOBE_RADIUS;
+  const radius = GLOBE_RADIUS * state.globeZoom;
   const cx = GLOBE_SIZE / 2;
   const cy = GLOBE_SIZE / 2;
 
@@ -2274,7 +2287,7 @@ if (globeSvgEl) {
     const dy = event.clientY - globeLastPointer.y;
     globeLastPointer = { x: event.clientX, y: event.clientY };
 
-    const degPerPixel = 180 / (Math.PI * GLOBE_RADIUS);
+    const degPerPixel = 180 / (Math.PI * GLOBE_RADIUS * state.globeZoom);
     const center = getGlobeCenter(state.points);
     const nextLat = clamp(center.lat - dy * degPerPixel, -89, 89);
     const nextLon = wrapLongitude(center.lon - dx * degPerPixel);
@@ -2297,12 +2310,34 @@ if (globeResetBtnEl) {
   globeResetBtnEl.addEventListener("click", () => {
     state.globeUserControlled = false;
     state.globeCenter = null;
+    setGlobeZoom(1);
     refreshGlobeOnly();
   });
 }
 
 if (globeLabelsToggleEl) {
   globeLabelsToggleEl.addEventListener("change", () => {
+    refreshGlobeOnly();
+  });
+}
+
+if (globeZoomRangeEl) {
+  globeZoomRangeEl.addEventListener("input", () => {
+    const parsed = Number(globeZoomRangeEl.value);
+    if (!Number.isFinite(parsed)) {
+      return;
+    }
+    setGlobeZoom(parsed / 100);
+    refreshGlobeOnly();
+  });
+}
+
+if (globeSvgEl) {
+  globeSvgEl.addEventListener("wheel", (event) => {
+    event.preventDefault();
+    const delta = event.deltaY || 0;
+    const direction = delta > 0 ? -0.05 : 0.05;
+    setGlobeZoom(state.globeZoom + direction);
     refreshGlobeOnly();
   });
 }
@@ -2327,6 +2362,11 @@ if (intersectionCalcEl) {
     }
     renderSelectedIntersection(circleA, circleB, indexA, indexB);
   });
+}
+
+if (globeZoomRangeEl) {
+  const parsed = Number(globeZoomRangeEl.value);
+  setGlobeZoom(Number.isFinite(parsed) ? parsed / 100 : 1);
 }
 
 run();
