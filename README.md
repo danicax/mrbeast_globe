@@ -1,5 +1,24 @@
 # Great Circle Triple Finder
 
+## Deploy to GitHub Pages
+
+This repo is set up to deploy like the Sudoku project (using the `gh-pages` npm package):
+
+- `npm run build`: copies `public/` to `dist/`
+- `npm run deploy`: publishes `dist/` to the `gh-pages` branch
+
+Commands:
+
+```bash
+npm install
+npm run deploy
+```
+
+Then in GitHub: **Settings → Pages → Deploy from a branch** and select:
+
+- Branch: `gh-pages`
+- Folder: `/ (root)`
+
 Simple Node app with two views:
 1. A cutoff-filtered, scrollable table of deduplicated location sets:
    - Build great circles from every pair of locations.
