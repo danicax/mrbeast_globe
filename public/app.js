@@ -1541,16 +1541,29 @@ function renderGlobe(points, overlays, hiddenPointIndices = new Set()) {
       return;
     }
 
+    const labelX = cx + projected.x;
+    const labelY = cy + projected.y;
+
     globeSvgEl.appendChild(
       svgEl("circle", {
-        cx: cx + projected.x,
-        cy: cy + projected.y,
+        cx: labelX,
+        cy: labelY,
         r: highlightColor ? 4.4 : 3.2,
         fill: highlightColor || "#ffd24d",
         stroke: highlightColor ? "#ffffff" : "#a66a00",
         "stroke-width": highlightColor ? 1 : 0.7
       })
     );
+
+    const label = svgEl("text", {
+      x: labelX + 6,
+      y: labelY - 6,
+      fill: "#eef4ff",
+      "font-size": 11,
+      "font-weight": 600
+    });
+    label.textContent = point.name;
+    globeSvgEl.appendChild(label);
   });
 }
 
