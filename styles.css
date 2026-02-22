@@ -126,6 +126,19 @@ button:hover {
   font-size: 0.82rem;
 }
 
+.globe-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #dbeafe;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.globe-toggle input {
+  accent-color: #60a5fa;
+}
+
 .globe-reset-btn {
   background: #0f3b8a;
   padding: 0.35rem 0.6rem;
